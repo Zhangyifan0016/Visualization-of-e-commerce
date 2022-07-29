@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import SellerPage from '@/views/SellerPage'
+import TrendPage from '@/views/TrendPage'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -8,6 +10,11 @@ const routes = [
     path: '/sellerpage',
     name: 'sellerpage',
     component: SellerPage
+  },
+  {
+    path: '/trendpage',
+    name: 'trendpage',
+    component: TrendPage
   }
 ]
 
