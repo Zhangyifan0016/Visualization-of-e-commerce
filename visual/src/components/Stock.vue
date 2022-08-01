@@ -83,7 +83,7 @@ export default {
       const sellerArr = showData.map((item, index) => {
         return {
           type: 'pie',
-          radius: [110, 100],
+          // radius: [110, 100],
           center: centerArr[index],
           hoverAnimation: false,
           labelLine: {
