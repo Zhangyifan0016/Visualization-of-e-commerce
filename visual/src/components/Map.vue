@@ -14,14 +14,24 @@ export default {
       mapData: {}
     }
   },
+  created() {
+    this.$socket.registerCallback('mapData', this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action: 'getData',
+      socketType: 'mapData',
+      chartName: 'map',
+      value: ''
+    })
     this.screenAdapter()
     window.addEventListener('resize', this.screenAdapter)
   },
   destroyed() {
     window.removeEventListener('resize', this.screenAdapter)
+    this.$socket.registerCallback('mapData')
   },
 
   methods: {

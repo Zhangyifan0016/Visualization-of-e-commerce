@@ -14,15 +14,25 @@ export default {
       timer: null
     }
   },
+  created() {
+    this.$socket.registerCallback('sellerData', this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action: 'getData',
+      socketType: 'sellerData',
+      chartName: 'seller',
+      value: ''
+    })
     this.screenAdapter()
     window.addEventListener('resize', this.screenAdapter)
   },
   destroyed() {
     clearInterval(this.timer)
     window.removeEventListener('resize', this.screenAdapter)
+    this.$socket.registerCallback('sellerData')
   },
 
   methods: {
@@ -93,8 +103,8 @@ export default {
         this.startInterval()
       })
     },
-    async getData() {
-      const { data: res } = await this.$http.get('seller')
+    getData(res) {
+      // const { data: res } = await this.$http.get('seller')
       this.allData = res
       // 数据从小到大排序
       this.allData.sort((a, b) => a.value - b.value)

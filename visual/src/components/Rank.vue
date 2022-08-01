@@ -14,15 +14,25 @@ export default {
       timer: null
     }
   },
+  created() {
+    this.$socket.registerCallback('rankData', this.getData)
+  },
   mounted() {
     this.initChart()
-    this.getData()
+    // this.getData()
+    this.$socket.send({
+      action: 'getData',
+      socketType: 'rankData',
+      chartName: 'rank',
+      value: ''
+    })
     this.screenAdapter()
     window.addEventListener('resize', this.screenAdapter)
   },
   destroyed() {
     clearInterval(this.timer)
     window.removeEventListener('resize', this.screenAdapter)
+    this.$socket.registerCallback('rankData')
   },
 
   methods: {
@@ -70,8 +80,8 @@ export default {
         this.startInterval()
       })
     },
-    async getData() {
-      const { data: res } = await this.$http.get('rank')
+    getData(res) {
+      // const { data: res } = await this.$http.get('rank')
       this.allData = res
       // 数据从大到小排序
       this.allData.sort((a, b) => b.value - a.value)
