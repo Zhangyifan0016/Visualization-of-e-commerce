@@ -4,7 +4,19 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme() {
+      this.chartInstance.dispose() // 销毁当前的图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
+    }
+  },
   data() {
     return {
       chartInstance: null,
@@ -36,7 +48,7 @@ export default {
 
   methods: {
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.stockRef, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.stockRef, this.theme)
       // 初始化配置控制
       const initOption = {
         title: {
@@ -95,7 +107,7 @@ export default {
           },
           data: [
             {
-              name: item.name + '\n' + item.sales,
+              name: item.name + '\n\n' + item.sales,
               value: item.sales,
               itemStyle: {
                 color: new this.$echarts.graphic.LinearGradient(0, 1, 0, 0, [
@@ -139,7 +151,7 @@ export default {
     // 屏幕适配
     screenAdapter() {
       const titleFontSize = (this.$refs.stockRef.offsetWidth / 100) * 3.6
-      const innerRadius = titleFontSize * 2
+      const innerRadius = titleFontSize * 2.8
       const outterRadius = innerRadius * 1.125
       // 分辨率配置项
       const adapterOption = {

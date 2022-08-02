@@ -23,7 +23,17 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
+import { getThemeValue } from '@/utils/theme_utils'
 export default {
+  watch: {
+    theme() {
+      this.chartInstance.dispose() // 销毁当前的图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
+    }
+  },
   data() {
     return {
       chartInstance: null,
@@ -71,18 +81,22 @@ export default {
     },
     titleStyle() {
       return {
-        fontSize: this.titleFontSize + 'px'
+        fontSize: this.titleFontSize + 'px',
+        color: getThemeValue(this.theme).titleColor
       }
     },
     marginStyle() {
       return {
-        marginLeft: this.titleFontSize + 'px'
+        marginLeft: this.titleFontSize + 'px',
+        backgroundColor: getThemeValue(this.theme).backgroundColor,
+        color: getThemeValue(this.theme).titleColor
       }
-    }
+    },
+    ...mapState(['theme'])
   },
   methods: {
     initChart() {
-      this.chartInstance = this.$echarts.init(this.$refs.trendRef, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.trendRef, this.theme)
       // 初始化配置控制
       const initOption = {
         grid: {
